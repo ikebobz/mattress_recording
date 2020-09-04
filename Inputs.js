@@ -5,7 +5,7 @@ import AutoComplete from 'react-native-autocomplete-input';
 
 class Inputs extends Component
 {
-state = {len:'',wide:'',thick:'',type:'',id:'',date:'',srchId:'',isDisabled:false}
+state = {len:'',wide:'',thick:'',type:'',id:'',Qty:0,date:'',srchId:'',isDisabled:false}
 handleDim = (text,uid) => { 
 if(uid == 0)
 this.setState({len:text});
@@ -15,6 +15,7 @@ else
  this.setState({thick:text});
 }
 handleCode = (text) => this.setState({type:text})
+handleQty = (units) => this.setState({Qty:units})
 _savedata = async() =>{
 try
 {
@@ -32,17 +33,18 @@ const keys = await AsyncStorage.getAllKeys();
 const dates = keys.map(key=>key.split("_")[1]);
 const result = await AsyncStorage.multiGet(keys);
 const record = result.map(req => JSON.parse(req[1]));
-let hits = [];
+let hits = [];let getKeys = []
 let count = 0;
 for(let i=0;i<keys.length;i++)
 {
 if(date === dates[i] && id === record[i].id)
 {
 hits.push(record[i]);
+getKeys.push(keys[i])
 }
 }
 //alert(hits[0]);
-this.props.navigation.navigate("Reporting",{data:hits});
+this.props.navigation.navigate("Reporting",{data:hits,kys:getKeys});
 }
 catch(e)
 {
@@ -55,6 +57,9 @@ this.txtwidth.clear();
 this.txtheight.clear();
 this.txttype.clear();
 this.txtid.clear();
+this.txtQty.clear();
+this.txtsrch.clear();
+this.setState({date:''});
 }
 handleId = (text) => this.setState({id:text})
 handletxid = (text) => this.setState({srchid:text})
@@ -68,7 +73,7 @@ var date = new Date().getDate(); //Current Date
 	var instance = 'rmc_'+date + '.' + month + '.' + year + '_' + hours + ':' + min + ':' + sec;
     return instance;
 }
-submit = (dim,type,id) => {if(type == ''||id == ''||this.state.len == ''||this.state.wide == ''||this.state.thick == ''){alert("Missing Field(s)");return};
+submit = (dim,type,id) => {if(type == ''||id == ''||this.state.len == ''||this.state.wide == ''||this.state.thick == ''||this.state.Qty == 0){alert("Missing Field(s)");return};
 this._savedata();
 //alert(dim+type+' successfully recorded for '+id);
 //alert(this.getInstance());
@@ -130,6 +135,16 @@ return(
 			   onChangeText = {this.handleId} value = {this.state.id}/>
             </View>
 			<View style = {styles.mattressinfo}>
+			 <TextInput style = {styles.input}
+			 ref = {input=>{this.txtQty = input}}
+               underlineColorAndroid = "transparent"
+               placeholder = "Quantity"
+               placeholderTextColor = "#8fbc8f"
+               autoCapitalize = "characters"
+			   keyboardType={'numeric'}
+			   onChangeText = {this.handleQty} value = {this.state.Qty}/>
+            </View>
+			<View style = {styles.mattressinfo}>
             <TouchableOpacity
                style = {styles.submitButton}
              disabled = {this.state.isDisabled}
@@ -153,6 +168,7 @@ return(
             </View>
 			<View>
 			<DatePicker
+			ref = {input=>{this.datepicker = input}}
         style={{width: 200}}
         date={this.state.date}
         mode="date"
