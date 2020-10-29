@@ -29,18 +29,32 @@ catch(error)
 _getForDate = async(id,date)=>{
 try{
 //await AsyncStorage.removeItem("rmc-1.9.2020_6:3:7");
-const keys = await AsyncStorage.getAllKeys();
+const prekeys = await AsyncStorage.getAllKeys();
+const keys = prekeys.filter(data => data.includes("rmc"));
 const dates = keys.map(key=>key.split("_")[1]);
 const result = await AsyncStorage.multiGet(keys);
 const record = result.map(req => JSON.parse(req[1]));
 let hits = [];let getKeys = []
 let count = 0;
+if(id == "ALL")
+{
+for(let i=0;i<keys.length;i++)
+{
+if(date === dates[i])
+{
+hits.push(record[i]);
+getKeys.push(keys[i])
+}
+}
+}
+else {
 for(let i=0;i<keys.length;i++)
 {
 if(date === dates[i] && id === record[i].id)
 {
 hits.push(record[i]);
 getKeys.push(keys[i])
+}
 }
 }
 //alert(hits[0]);
@@ -195,16 +209,12 @@ return(
 			</View>
 			<View style = {styles.mattressinfo}>
 			<TouchableOpacity
-               style = {styles.submitButton} onPress = {()=>{this._getForDate(this.state.srchid,this.state.date);this.setState({isDisabled:true})}}>
+               style = {styles.submitButton} onPress = {()=>{this._getForDate(this.state.srchid,this.state.date);}}>
                <Text style = {styles.submitButtonText}> Retrieve </Text>
             </TouchableOpacity>
 			<TouchableOpacity
                style = {styles.submitButton} onPress = {()=>this.setState({isDisabled:false})}>
-               <Text style = {styles.submitButtonText}> Update</Text>
-            </TouchableOpacity>
-			<TouchableOpacity
-               style = {styles.submitButton}>
-               <Text style = {styles.submitButtonText}> Purge</Text>
+               <Text style = {styles.submitButtonText}> Get All Transaction</Text>
             </TouchableOpacity>
 			</View>
 			</ScrollView>

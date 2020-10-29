@@ -1,0 +1,12 @@
+{
+  "name": "xplore_rnative",
+  "displayName": "xplore_rnative",
+  "expo": {
+    "name": "xplore_rnative",
+    "slug": "xplore_rnative",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

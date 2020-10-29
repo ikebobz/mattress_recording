@@ -8,9 +8,9 @@ render(){return(
  <View>
             
                   <TouchableOpacity
-                     style = {styles.topParent}>
+                     style = {styles.topParent} onPress = {()=>this.props.navigation.navigate('Operator Infomgt')}>
                      <Text style = {styles.text}>
-                       User Management 
+                       Operator Information Management 
                      </Text>
                   </TouchableOpacity>
 				  <TouchableOpacity
